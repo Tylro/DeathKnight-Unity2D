@@ -18,6 +18,20 @@ public class PlayerController : MonoBehaviour
     private float xAxis;
     Animator anim;
 
+    public static PlayerController Instance;
+
+    private void Awake()
+    {
+        if (Instance != null && Instance != this)
+        {
+            Destroy(gameObject);
+        }
+        else
+        {
+            Instance = this;
+        }
+    }
+
     // Start is called before the first frame update
     void Start()
     {
