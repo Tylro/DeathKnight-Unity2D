@@ -26,10 +26,19 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private LayerMask whatIsGround;
     [Space(5)]
 
+    [Header("Dash Settings")]
+    [SerializeField] private float dashSpeed;
+    [SerializeField] private float dashTime;
+    [SerializeField] private float dashCooldown;
+    [Space(5)]
+
     PlayerStateList pState;
     private Rigidbody2D rb;
     private float xAxis;
+    private float gravity;
     Animator anim;
+    private bool canDash = true;
+    private bool dashed;
 
     public static PlayerController Instance;
 
@@ -53,6 +62,8 @@ public class PlayerController : MonoBehaviour
         anim = GetComponent<Animator>();
 
         pState = GetComponent<PlayerStateList>();
+
+        gravity = rb.gravityScale;
     }
 
     // Update is called once per frame
@@ -60,10 +71,13 @@ public class PlayerController : MonoBehaviour
     {
         GetInputs();
         UpdateJumpVariables();
+
+        if (pState.dashing) return; //Stops running the Update function short if player is dashing
+
         Flip();
         Move();
         Jump();
-        
+        StartDash();
     }
 
     void GetInputs()
@@ -88,6 +102,33 @@ public class PlayerController : MonoBehaviour
         rb.velocity = new Vector2(walkSpeed * xAxis, rb.velocity.y);
 
         anim.SetBool("Walking", rb.velocity.x != 0 && Grounded());
+    }
+
+    void StartDash()
+    {
+        if (Input.GetButtonDown("Dash") && canDash && !dashed)
+        {
+            StartCoroutine(Dash());
+            dashed = true;
+        }
+        if (Grounded())
+        {
+            dashed = false;
+        }
+    }
+
+    IEnumerator Dash() //the dash action the player performs
+    {
+        canDash = false;
+        pState.dashing = true;
+        anim.SetTrigger("Dashing");
+        rb.gravityScale = 0;
+        rb.velocity = new Vector2(transform.localScale.x * dashSpeed, 0);
+        yield return new WaitForSeconds(dashTime);
+        rb.gravityScale = gravity;
+        pState.dashing = false;
+        yield return new WaitForSeconds(dashCooldown);
+        canDash = true;
     }
 
     public bool Grounded()
