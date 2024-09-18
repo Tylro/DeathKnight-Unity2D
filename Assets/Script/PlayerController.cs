@@ -6,6 +6,8 @@ public class PlayerController : MonoBehaviour
 {
     [Header("Horizontal Movement Settings")]
     [SerializeField] private float walkSpeed = 1;
+    private float jumpBufferCounter = 0;
+    [SerializeField] private float jumpBufferFrames;
 
     [Header("Ground Check Settings")]
     [SerializeField] private float jumpForce = 45;
@@ -14,6 +16,7 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private float groundCheckX = 0.5f;
     [SerializeField] private LayerMask whatIsGround;
 
+    PlayerStateList pState;
     private Rigidbody2D rb;
     private float xAxis;
     Animator anim;
@@ -38,15 +41,19 @@ public class PlayerController : MonoBehaviour
         rb = GetComponent<Rigidbody2D>();
 
         anim = GetComponent<Animator>();
+
+        pState = GetComponent<PlayerStateList>();
     }
 
     // Update is called once per frame
     void Update()
     {
         GetInputs();
+        UpdateJumpVariables();
+        Flip();
         Move();
         Jump();
-        Flip();
+        
     }
 
     void GetInputs()
@@ -92,12 +99,37 @@ public class PlayerController : MonoBehaviour
         if (Input.GetButtonUp("Jump") && rb.velocity.y > 0)
         {
             rb.velocity = new Vector2(rb.velocity.x, 0);
-        }
-        if (Input.GetButtonDown("Jump") && Grounded())
-        {
-            rb.velocity = new Vector3(rb.velocity.x, jumpForce);
+
+            pState.jumping = false;
         }
 
+        if(!pState.jumping)
+        {
+            if (jumpBufferCounter > 0 && Grounded())
+            {
+                rb.velocity = new Vector3(rb.velocity.x, jumpForce);
+
+                pState.jumping = true;
+            }
+        }    
+
         anim.SetBool("Jumping", !Grounded());
+    }
+
+    void UpdateJumpVariables()
+    {
+        if (Grounded())
+        {
+            pState.jumping = false;
+        }
+
+        if (Input.GetButtonDown("Jump"))
+        {
+            jumpBufferCounter = jumpBufferFrames;
+        }
+        else
+        {
+            jumpBufferCounter = jumpBufferCounter - Time.deltaTime * 10;
+        }
     }
 }
