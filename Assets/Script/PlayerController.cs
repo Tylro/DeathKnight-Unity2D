@@ -33,13 +33,17 @@ public class PlayerController : MonoBehaviour
     [SerializeField] GameObject dashEffect;
     [Space(5)]
 
-    PlayerStateList pState;
+    private PlayerStateList pState;
     private Rigidbody2D rb;
     private float xAxis;
     private float gravity;
-    Animator anim;
+    private Animator anim;
     private bool canDash = true;
     private bool dashed;
+
+    private bool attack = false;
+    [SerializeField] private float timeBetweenAttack;
+    private float timeSinceAttack;
 
     public static PlayerController Instance;
 
@@ -79,11 +83,14 @@ public class PlayerController : MonoBehaviour
         Move();
         Jump();
         StartDash();
+        Attack();
     }
 
     void GetInputs()
     {
         xAxis = Input.GetAxisRaw("Horizontal");
+
+        attack = Input.GetMouseButtonDown(0);
     }
 
     void Flip()
@@ -131,6 +138,16 @@ public class PlayerController : MonoBehaviour
         pState.dashing = false;
         yield return new WaitForSeconds(dashCooldown);
         canDash = true;
+    }
+
+    void Attack()
+    {
+        timeSinceAttack += Time.deltaTime;
+        if (attack && timeSinceAttack >= timeBetweenAttack)
+        {
+            timeSinceAttack = 0;
+            anim.SetTrigger("Attacking");
+        }
     }
 
     public bool Grounded()
