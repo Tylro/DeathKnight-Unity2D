@@ -35,15 +35,20 @@ public class PlayerController : MonoBehaviour
 
     private PlayerStateList pState;
     private Rigidbody2D rb;
-    private float xAxis;
+    private float xAxis, yAxis;
     private float gravity;
     private Animator anim;
     private bool canDash = true;
     private bool dashed;
 
+    [Header("Attacking")]
     private bool attack = false;
     [SerializeField] private float timeBetweenAttack;
     private float timeSinceAttack;
+    [SerializeField] Transform SideAttackTransform, UpAttackTransform, DownAttackTransform;
+    [SerializeField] Vector2 SideAttackArea, UpAttackArea, DownAttackArea;
+    [SerializeField] LayerMask attackableLayer;
+
 
     public static PlayerController Instance;
 
@@ -71,6 +76,14 @@ public class PlayerController : MonoBehaviour
         gravity = rb.gravityScale;
     }
 
+    private void OnDrawGizmos()
+    {
+        Gizmos.color = Color.red;
+        Gizmos.DrawWireCube(SideAttackTransform.position, SideAttackArea);
+        Gizmos.DrawWireCube(UpAttackTransform.position, UpAttackArea);
+        Gizmos.DrawWireCube(DownAttackTransform.position, DownAttackArea);
+    }
+
     // Update is called once per frame
     void Update()
     {
@@ -89,6 +102,8 @@ public class PlayerController : MonoBehaviour
     void GetInputs()
     {
         xAxis = Input.GetAxisRaw("Horizontal");
+
+        yAxis = Input.GetAxisRaw("Vertical");
 
         attack = Input.GetMouseButtonDown(0);
     }
@@ -147,8 +162,31 @@ public class PlayerController : MonoBehaviour
         {
             timeSinceAttack = 0;
             anim.SetTrigger("Attacking");
+
+            if (yAxis == 0 || yAxis < 0 && Grounded())
+            {
+                Hit(SideAttackTransform, SideAttackArea);
+            }
+            else if (yAxis > 0)
+            {
+                Hit(UpAttackTransform, UpAttackArea);
+            }
+            else if (yAxis < 0 && !Grounded())
+            {
+                Hit(DownAttackTransform, DownAttackArea);
+            }
         }
     }
+
+    private void Hit(Transform _attackTransform, Vector2 _attackArea)
+    {
+        Collider2D[] objectsToHit = Physics2D.OverlapBoxAll(_attackTransform.position, _attackArea, 0, attackableLayer);
+
+        if (objectsToHit.Length > 0 )
+        {
+            Debug.Log("Hit");
+        }
+    }    
 
     public bool Grounded()
     {
