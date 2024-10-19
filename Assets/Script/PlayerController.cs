@@ -50,6 +50,8 @@ public class PlayerController : MonoBehaviour
     [SerializeField] LayerMask attackableLayer;
     [SerializeField] private float damage;
 
+    [SerializeField] private GameObject slashEffect;
+
 
     public static PlayerController Instance;
 
@@ -167,14 +169,17 @@ public class PlayerController : MonoBehaviour
             if (yAxis == 0 || yAxis < 0 && Grounded())
             {
                 Hit(SideAttackTransform, SideAttackArea);
+                Instantiate(slashEffect, SideAttackTransform);
             }
             else if (yAxis > 0)
             {
                 Hit(UpAttackTransform, UpAttackArea);
+                SlashEffectAtAngle(slashEffect, 80, UpAttackTransform);
             }
             else if (yAxis < 0 && !Grounded())
             {
                 Hit(DownAttackTransform, DownAttackArea);
+                SlashEffectAtAngle(slashEffect, -90, UpAttackTransform);
             }
         }
     }
@@ -199,7 +204,14 @@ public class PlayerController : MonoBehaviour
                 hitEnemies.Add(e);
             }
         }
-    }    
+    }
+
+    void SlashEffectAtAngle(GameObject _slashEffect, int _effectAngle, Transform _attackTransform)
+    {
+        _slashEffect = Instantiate(_slashEffect, _attackTransform);
+        _slashEffect.transform.eulerAngles = new Vector3(0, 0, _effectAngle);
+        _slashEffect.transform.localScale = new Vector2(transform.localScale.x, transform.localScale.y);
+    }
 
     public bool Grounded()
     {
