@@ -543,7 +543,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 90ef8e425ee91014e86adaa77e4a2ef6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  health: 10
+  health: 1000
+  recoilLength: 1
+  recoilFactor: 3
+  isRecoiling: 1
 --- !u!50 &1716460017
 Rigidbody2D:
   serializedVersion: 4
@@ -838,6 +841,10 @@ MonoBehaviour:
     m_Bits: 64
   damage: 2
   slashEffect: {fileID: 5335715993545547662, guid: cd45160e25d7cb146927320bb8a3c679, type: 3}
+  recoilXSteps: 5
+  recoilYSteps: 5
+  recoilXSpeed: 100
+  recoilYSpeed: 100
 --- !u!95 &1738260057
 Animator:
   serializedVersion: 4
@@ -872,6 +879,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   jumping: 0
   dashing: 0
+  recoilingX: 0
+  recoilingY: 0
+  lookingRight: 0
 --- !u!1 &1872151367
 GameObject:
   m_ObjectHideFlags: 0
