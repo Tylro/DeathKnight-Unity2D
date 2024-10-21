@@ -523,7 +523,8 @@ GameObject:
   - component: {fileID: 1716460019}
   - component: {fileID: 1716460018}
   - component: {fileID: 1716460017}
-  - component: {fileID: 1716460016}
+  - component: {fileID: 1716460021}
+  - component: {fileID: 1716460022}
   m_Layer: 6
   m_Name: Enemy
   m_TagString: Untagged
@@ -531,22 +532,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &1716460016
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1716460015}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 90ef8e425ee91014e86adaa77e4a2ef6, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  health: 1000
-  recoilLength: 1
-  recoilFactor: 3
-  isRecoiling: 1
 --- !u!50 &1716460017
 Rigidbody2D:
   serializedVersion: 4
@@ -564,9 +549,9 @@ Rigidbody2D:
   m_AngularDrag: 0.05
   m_GravityScale: 1
   m_Material: {fileID: 0}
-  m_Interpolate: 0
+  m_Interpolate: 1
   m_SleepingMode: 1
-  m_CollisionDetection: 0
+  m_CollisionDetection: 1
   m_Constraints: 4
 --- !u!61 &1716460018
 BoxCollider2D:
@@ -581,7 +566,7 @@ BoxCollider2D:
   m_IsTrigger: 0
   m_UsedByEffector: 0
   m_UsedByComposite: 0
-  m_Offset: {x: 0, y: 0}
+  m_Offset: {x: -0.0026078075, y: -0.01686272}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0.5, y: 0.5}
@@ -592,7 +577,7 @@ BoxCollider2D:
     adaptiveTiling: 0
   m_AutoTiling: 0
   serializedVersion: 2
-  m_Size: {x: 1, y: 1}
+  m_Size: {x: 0.9008949, y: 0.96627456}
   m_EdgeRadius: 0
 --- !u!212 &1716460019
 SpriteRenderer:
@@ -654,13 +639,57 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1716460015}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -0.79, y: -3.26, z: 0}
+  m_LocalPosition: {x: 2.64, y: -3.26, z: 0}
   m_LocalScale: {x: 0.77, y: 1.31, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 5
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1716460021
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1716460015}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2233b67c05ec80d43b9530374bb1e08c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  health: 100
+  recoilLength: 0.5
+  recoilFactor: 5
+  isRecoiling: 0
+  speed: 2
+  damage: 20
+--- !u!61 &1716460022
+BoxCollider2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1716460015}
+  m_Enabled: 1
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IsTrigger: 1
+  m_UsedByEffector: 0
+  m_UsedByComposite: 0
+  m_Offset: {x: 0, y: 0}
+  m_SpriteTilingProperty:
+    border: {x: 0, y: 0, z: 0, w: 0}
+    pivot: {x: 0.5, y: 0.5}
+    oldSize: {x: 1, y: 1}
+    newSize: {x: 1, y: 1}
+    adaptiveTilingThreshold: 0.5
+    drawMode: 0
+    adaptiveTiling: 0
+  m_AutoTiling: 0
+  serializedVersion: 2
+  m_Size: {x: 1, y: 1}
+  m_EdgeRadius: 0
 --- !u!1 &1738260051
 GameObject:
   m_ObjectHideFlags: 0
@@ -678,7 +707,7 @@ GameObject:
   - component: {fileID: 1738260058}
   m_Layer: 0
   m_Name: Player
-  m_TagString: Untagged
+  m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -829,6 +858,7 @@ MonoBehaviour:
   dashTime: 0.2
   dashCooldown: 0.35
   dashEffect: {fileID: 2327697939037238513, guid: b2c17d534a2eedc458d165d2494b6dbd, type: 3}
+  pState: {fileID: 0}
   timeBetweenAttack: 0.5
   SideAttackTransform: {fileID: 1139473235}
   UpAttackTransform: {fileID: 2004882911}
@@ -841,10 +871,12 @@ MonoBehaviour:
     m_Bits: 64
   damage: 2
   slashEffect: {fileID: 5335715993545547662, guid: cd45160e25d7cb146927320bb8a3c679, type: 3}
-  recoilXSteps: 5
-  recoilYSteps: 5
-  recoilXSpeed: 100
-  recoilYSpeed: 100
+  recoilXSteps: 1
+  recoilYSteps: 1
+  recoilXSpeed: 20
+  recoilYSpeed: 20
+  health: 0
+  maxHealth: 100
 --- !u!95 &1738260057
 Animator:
   serializedVersion: 4
@@ -882,6 +914,7 @@ MonoBehaviour:
   recoilingX: 0
   recoilingY: 0
   lookingRight: 0
+  invincible: 0
 --- !u!1 &1872151367
 GameObject:
   m_ObjectHideFlags: 0

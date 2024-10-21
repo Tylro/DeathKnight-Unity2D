@@ -33,7 +33,7 @@ public class PlayerController : MonoBehaviour
     [SerializeField] GameObject dashEffect;
     [Space(5)]
 
-    private PlayerStateList pState;
+    [HideInInspector] public PlayerStateList pState;
     private Rigidbody2D rb;
     private float xAxis, yAxis;
     private float gravity;
@@ -62,6 +62,11 @@ public class PlayerController : MonoBehaviour
     private int stepsXRecoiled, stepsYRecoiled; //the no. of steps recoiled horizontally and verticall 
     [Space(5)]
 
+    [Header("Health Settings")]
+    public int health;
+    public int maxHealth;
+    [Space(5)]
+
 
     public static PlayerController Instance;
 
@@ -75,6 +80,7 @@ public class PlayerController : MonoBehaviour
         {
             Instance = this;
         }
+        health = maxHealth;
     }
 
     // Start is called before the first frame update
@@ -289,6 +295,27 @@ public class PlayerController : MonoBehaviour
     {
         stepsYRecoiled = 0;
         pState.recoilingY = false;
+    }
+
+    public void TakeDamage(float _damage)
+    {
+        health -= Mathf.RoundToInt(_damage);
+        StartCoroutine(StopTakingDamage());
+    }
+
+    IEnumerator StopTakingDamage()
+    {
+        pState.invincible = true;
+        anim.SetTrigger("TakeDamage");
+        ClampHealth();
+        yield return new WaitForSeconds(1f);
+        pState.invincible = false;
+    }
+
+    void ClampHealth()
+    {
+        health = Mathf.Clamp(health, 0, maxHealth);
+        StartCoroutine(StopTakingDamage());
     }
 
     void SlashEffectAtAngle(GameObject _slashEffect, int _effectAngle, Transform _attackTransform)
