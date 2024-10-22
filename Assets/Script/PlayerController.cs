@@ -89,7 +89,7 @@ public class PlayerController : MonoBehaviour
         {
             Instance = this;
         }
-        Health = maxHealth;
+        DontDestroyOnLoad(gameObject);
     }
 
     // Start is called before the first frame update
@@ -103,6 +103,8 @@ public class PlayerController : MonoBehaviour
 
         gravity = rb.gravityScale;
         sr = GetComponent<SpriteRenderer>();
+
+        Health = maxHealth;
     }
 
     private void OnDrawGizmos()
@@ -118,6 +120,7 @@ public class PlayerController : MonoBehaviour
     {
         GetInputs();
         UpdateJumpVariables();
+        RestoreTimeScale();
 
         if (pState.dashing) return; //Stops running the Update function short if player is dashing
 
@@ -126,7 +129,6 @@ public class PlayerController : MonoBehaviour
         Jump();
         StartDash();
         Attack();
-        RestoreTimeScale();
         FlashWhileInvincible();
         //Recoil();
     }
@@ -187,7 +189,8 @@ public class PlayerController : MonoBehaviour
         pState.dashing = true;
         anim.SetTrigger("Dashing");
         rb.gravityScale = 0;
-        rb.velocity = new Vector2(transform.localScale.x * dashSpeed, 0);
+        int _dir = pState.lookingRight ? 1 : -1;
+        rb.velocity = new Vector2(_dir* dashSpeed, 0);
         if (Grounded()) Instantiate(dashEffect, transform);
         yield return new WaitForSeconds(dashTime);
         rb.gravityScale = gravity;
@@ -419,22 +422,23 @@ public class PlayerController : MonoBehaviour
 
     void Jump()
     {
-        if (Input.GetButtonUp("Jump") && rb.velocity.y > 0)
+        if (Input.GetButtonUp("Jump") && rb.velocity.y > 3)
         {
             rb.velocity = new Vector2(rb.velocity.x, 0);
 
             pState.jumping = false;
         }
 
-        if(!pState.jumping)
-        {
-            if (jumpBufferCounter > 0 && coyoteTimeCounter > 0)
+        //if(!pState.jumping)
+        //{
+            if (!pState.jumping && jumpBufferCounter > 0 && coyoteTimeCounter > 0)
             {
                 rb.velocity = new Vector3(rb.velocity.x, jumpForce);
 
                 pState.jumping = true;
             }
-            else if (!Grounded() && airJumpCounter < maxAirJumps && Input.GetButtonDown("Jump"))
+            //else 
+            if (!Grounded() && airJumpCounter < maxAirJumps && Input.GetButtonDown("Jump"))
             {
                 pState.jumping = true;
 
@@ -442,7 +446,7 @@ public class PlayerController : MonoBehaviour
 
                 rb.velocity = new Vector3(rb.velocity.x, jumpForce);
             }
-        }    
+        //}    
 
         anim.SetBool("Jumping", !Grounded());
     }
