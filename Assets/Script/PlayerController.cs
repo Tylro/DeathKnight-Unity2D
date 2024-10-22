@@ -40,6 +40,7 @@ public class PlayerController : MonoBehaviour
     private Animator anim;
     private bool canDash = true;
     private bool dashed;
+    private SpriteRenderer sr;
 
     [Header("Attacking")]
     private bool attack = false;
@@ -69,6 +70,10 @@ public class PlayerController : MonoBehaviour
     public int health;
     public int maxHealth;
     [SerializeField] GameObject bloodSpurt;
+    [SerializeField] float hitFlashSpeed;
+
+    public delegate void OnHealthChangedDelegate();
+    [HideInInspector] public OnHealthChangedDelegate onHealthChangedCallback;
     [Space(5)]
 
 
@@ -97,6 +102,7 @@ public class PlayerController : MonoBehaviour
         pState = GetComponent<PlayerStateList>();
 
         gravity = rb.gravityScale;
+        sr = GetComponent<SpriteRenderer>();
     }
 
     private void OnDrawGizmos()
@@ -121,6 +127,7 @@ public class PlayerController : MonoBehaviour
         StartDash();
         Attack();
         RestoreTimeScale();
+        FlashWhileInvincible();
         //Recoil();
     }
 
@@ -326,6 +333,10 @@ public class PlayerController : MonoBehaviour
         pState.invincible = false;
     }
 
+    void FlashWhileInvincible()
+    {
+        sr.material.color = pState.invincible ? Color.Lerp(Color.white, Color.black, Mathf.PingPong(Time.time * hitFlashSpeed, 1.0f)) : Color.white;
+    }
     //void ClampHealth()
     //{
     //    health = Mathf.Clamp(health, 0, maxHealth);
@@ -376,6 +387,11 @@ public class PlayerController : MonoBehaviour
             if (health != value)
             {
                 health = Mathf.Clamp(value, 0, maxHealth);
+
+                if (onHealthChangedCallback != null)
+                {
+                    onHealthChangedCallback.Invoke();
+                }
             }
         }
     }
