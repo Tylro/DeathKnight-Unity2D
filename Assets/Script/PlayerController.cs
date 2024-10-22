@@ -51,6 +51,9 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private float damage;
 
     [SerializeField] private GameObject slashEffect;
+
+    bool restoreTime;
+    float restoreTimeSpeed;
     [Space(5)]
 
     [Header("Recoil Settings:")]
@@ -65,6 +68,7 @@ public class PlayerController : MonoBehaviour
     [Header("Health Settings")]
     public int health;
     public int maxHealth;
+    [SerializeField] GameObject bloodSpurt;
     [Space(5)]
 
 
@@ -80,7 +84,7 @@ public class PlayerController : MonoBehaviour
         {
             Instance = this;
         }
-        health = maxHealth;
+        Health = maxHealth;
     }
 
     // Start is called before the first frame update
@@ -116,6 +120,13 @@ public class PlayerController : MonoBehaviour
         Jump();
         StartDash();
         Attack();
+        RestoreTimeScale();
+        //Recoil();
+    }
+
+    private void FixedUpdate()
+    {
+        if (pState.dashing) return;
         Recoil();
     }
 
@@ -125,7 +136,8 @@ public class PlayerController : MonoBehaviour
 
         yAxis = Input.GetAxisRaw("Vertical");
 
-        attack = Input.GetMouseButtonDown(0);
+        //attack = Input.GetMouseButtonDown(0);
+        attack = Input.GetButtonDown("Attack");
     }
 
     void Flip()
@@ -299,23 +311,73 @@ public class PlayerController : MonoBehaviour
 
     public void TakeDamage(float _damage)
     {
-        health -= Mathf.RoundToInt(_damage);
+        Health -= Mathf.RoundToInt(_damage);
         StartCoroutine(StopTakingDamage());
     }
 
     IEnumerator StopTakingDamage()
     {
         pState.invincible = true;
+        GameObject _bloodSpurt = Instantiate(bloodSpurt, transform.position, Quaternion.identity);
+        Destroy(_bloodSpurt, 1.5f);
         anim.SetTrigger("TakeDamage");
-        ClampHealth();
+        //ClampHealth();
         yield return new WaitForSeconds(1f);
         pState.invincible = false;
     }
 
-    void ClampHealth()
+    //void ClampHealth()
+    //{
+    //    health = Mathf.Clamp(health, 0, maxHealth);
+    //    StartCoroutine(StopTakingDamage());
+    //}
+
+    void RestoreTimeScale()
     {
-        health = Mathf.Clamp(health, 0, maxHealth);
-        StartCoroutine(StopTakingDamage());
+        if (restoreTime)
+        {
+            if (Time.timeScale < 1)
+            {
+                Time.timeScale += Time.unscaledDeltaTime * restoreTimeSpeed;
+            }
+            else
+            {
+                Time.timeScale = 1;
+                restoreTime = false;
+            }
+        }
+    }
+
+    public void HitStopTime(float _newTimeScale, int _restoreSpeed, float _delay)
+    {
+        restoreTimeSpeed = _restoreSpeed;
+        if (_delay > 0)
+        {
+            StopCoroutine(StartTimeAgain(_delay));
+            StartCoroutine(StartTimeAgain(_delay));
+        }
+        else
+        {
+            restoreTime = true;
+        }
+        Time.timeScale = _newTimeScale;
+    }
+
+    IEnumerator StartTimeAgain(float _delay)
+    {
+        yield return new WaitForSecondsRealtime(_delay);
+        restoreTime = true;
+    }
+    public int Health
+    {
+        get { return health; }
+        set
+        {
+            if (health != value)
+            {
+                health = Mathf.Clamp(value, 0, maxHealth);
+            }
+        }
     }
 
     void SlashEffectAtAngle(GameObject _slashEffect, int _effectAngle, Transform _attackTransform)
