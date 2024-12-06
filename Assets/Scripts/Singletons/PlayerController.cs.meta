@@ -1,0 +1,31 @@
+fileFormatVersion: 2
+guid: bfffb2574324e4c48a6c3e170d36d4ea
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences:
+  - wallCheck: {instanceID: 0}
+  - groundCheckPoint: {instanceID: 0}
+  - dashEffect: {instanceID: 0}
+  - SideAttackTransform: {instanceID: 0}
+  - UpAttackTransform: {instanceID: 0}
+  - DownAttackTransform: {instanceID: 0}
+  - slashEffect: {instanceID: 0}
+  - bloodSpurt: {instanceID: 0}
+  - manaStorage: {instanceID: 0}
+  - manaOrbsHandler: {instanceID: 0}
+  - sideSpellFireball: {instanceID: 0}
+  - upSpellExplosion: {instanceID: 0}
+  - downSpellFireball: {instanceID: 0}
+  - landingSound: {fileID: 8300000, guid: 9125d1e7877f24c42b321280a1f02cf0, type: 3}
+  - jumpSound: {instanceID: 0}
+  - dashAndAttackSound: {instanceID: 0}
+  - spellCastSound: {instanceID: 0}
+  - hurtSound: {instanceID: 0}
+  - pState: {instanceID: 0}
+  - rb: {instanceID: 0}
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

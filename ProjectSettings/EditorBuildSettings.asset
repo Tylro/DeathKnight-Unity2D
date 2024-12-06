@@ -5,10 +5,22 @@ EditorBuildSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 2
   m_Scenes:
+  - enabled: 0
+    path: 
+    guid: 00000000000000000000000000000000
+  - enabled: 1
+    path: Assets/Scenes/Main Menu.unity
+    guid: 9c4610ae8e4e0634b9500a4fc9f2e94a
   - enabled: 1
     path: Assets/Scenes/Cave_1.unity
-    guid: 2cda990e2423bbf4892e6590ba056729
+    guid: 47fe15ead86135544bd88f9790b45bb4
   - enabled: 1
     path: Assets/Scenes/Cave_2.unity
-    guid: 6d64f483906c6484eb7eb0f99954796e
+    guid: 69b7266c3fbd2214f93cafaa45c830a4
+  - enabled: 1
+    path: Assets/Scenes/Cave_3.unity
+    guid: bb20255fd75f85a438b569289d182103
+  - enabled: 1
+    path: Assets/Scenes/Cave_Mossy.unity
+    guid: 7748637e75d653d4394a69c6f4a27426
   m_configObjects: {}
